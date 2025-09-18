@@ -138,8 +138,8 @@ static void release_rq_locks_irqrestore(const cpumask_t *cpus,
  */
 #define MIN_SCHED_RAVG_WINDOW (3333333 * 6)
 #else
-/* Min window size (in ns) = 20ms */
-#define MIN_SCHED_RAVG_WINDOW 20000000
+/* Min window size (in ns) = 10ms */
+#define MIN_SCHED_RAVG_WINDOW 10000000
 #endif
 
 /* Max window size (in ns) = 1s */
@@ -161,7 +161,7 @@ unsigned int walt_rotation_enabled;
  * IMPORTANT: Initialize both copies to same value!!
  */
 
-__read_mostly unsigned int sched_ravg_hist_size = 5;
+__read_mostly unsigned int sched_ravg_hist_size = 4;
 __read_mostly unsigned int sysctl_sched_ravg_hist_size = 5;
 
 static __read_mostly unsigned int sched_io_is_busy = 1;

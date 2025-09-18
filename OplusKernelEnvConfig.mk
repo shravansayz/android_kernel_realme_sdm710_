@@ -103,3 +103,26 @@ export CONFIG_SHIPPING_API_LEVEL=28
 KBUILD_CFLAGS += -DCONFIG_SHIPPING_API_LEVEL
 endif
 
+#
+# Custom Performance Optimizations by iabdollah40
+#
+
+# Force the highest level of optimization
+# This overrides the default -O2 or -Os
+KBUILD_CFLAGS   += -O3
+
+# Enable Polly for Clang (if supported) for advanced loop transformations.
+# This requires a modern Clang toolchain.
+# Uncomment the line below to enable.
+# KBUILD_CFLAGS   += -mllvm -polly
+
+# Add some extra warning flags to be disabled for a cleaner build log.
+KBUILD_CFLAGS   += -Wno-vector-conversion -Wno-implicit-fallthrough
+
+# Forcing compiler to use ARMv8.2-a crypto extensions if available
+# This can boost crypto performance.
+KBUILD_CFLAGS	+= -march=armv8.2-a+crypto
+
+# ThinLTO provides most of the benefits of Full LTO with much faster
+# link times. This should be enabled in the defconfig.
+# CONFIG_LTO_CLANG_THIN=y
