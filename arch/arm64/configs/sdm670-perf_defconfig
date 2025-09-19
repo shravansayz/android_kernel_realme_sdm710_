@@ -863,4 +863,15 @@ CONFIG_DEFAULT_NET_SCH="fq_codel"
 CONFIG_LTO_CLANG_THIN=y
 # CONFIG_LTO_NONE is not set
 
+# KernelSU_next
+CONFIG_KSU=y
+CONFIG_KSU_MANUAL_HOOK=y
+
+# Susfs
+CONFIG_KSU_SUSFS=y
+CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y
+
+# Kprobes
+CONFIG_KPROBES=n
+
 # これで完成だ (Kore de kansei da) - With this, it is complete.
