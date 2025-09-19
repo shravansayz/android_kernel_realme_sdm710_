@@ -216,7 +216,7 @@ static const BYTE *LZ4_getPositionOnHash(U32 h, void *tableBase,
 
 	{
 		/* default, to ensure a return */
-		const U16 *const hashTable = (U16 *)tableBase;
+		const U16 *const hashTable = (const U16 *)tableBase;
 
 		return hashTable[h] + srcBase;
 	}
@@ -1068,7 +1068,7 @@ int LZ4_saveDict(LZ4_stream_t *LZ4_dict, char *safeBuffer, int dictSize)
 		const BYTE *const previousDictEnd =
 			dict->dictionary + dict->dictSize;
 		assert(dict->dictionary);
-		LZ4_memmove(safeBuffer, previousDictEnd - dictSize,
+		memmove(safeBuffer, previousDictEnd - dictSize,
 			    (size_t)dictSize);
 	}
 
