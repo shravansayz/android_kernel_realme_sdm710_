@@ -354,6 +354,15 @@ static void show_vma_header_prefix(struct seq_file *m,
 extern void susfs_sus_ino_for_show_map_vma(unsigned long ino, dev_t *out_dev, unsigned long *out_ino);
 #endif
 
+/*
+ * NEWLY ADDED FUNCTION TO FIX LINKER ERROR
+ */
+static void show_vma_header_prefix_fake(struct seq_file *m,
+					unsigned long start, unsigned long end)
+{
+	seq_printf(m, "%08lx-%08lx ", start, end);
+}
+
 static void
 show_map_vma(struct seq_file *m, struct vm_area_struct *vma, int is_pid)
 {
@@ -398,7 +407,7 @@ bypass_orig_flow:
 			if (strstr(path, "jit-zygote-cache")) {
 			start = vma->vm_start;
 			end = vma->vm_end;
-			show_vma_header_prefix_fake(m, start, end, flags, pgoff, dev, ino);
+			show_vma_header_prefix_fake(m, start, end);
 			goto bypass;
             }
         }
