@@ -155,9 +155,9 @@ int vfs_statx(int dfd, const char __user *filename, int flags,
 		       AT_EMPTY_PATH | KSTAT_QUERY_FLAGS)) != 0)
 		return -EINVAL;
 
-	if (!(flag & AT_SYMLINK_NOFOLLOW))
+	if (!(flags & AT_SYMLINK_NOFOLLOW))
 		lookup_flags |= LOOKUP_FOLLOW;
-	if (flag & AT_EMPTY_PATH)
+	if (flags & AT_EMPTY_PATH)
 		lookup_flags |= LOOKUP_EMPTY;
 retry:
 	error = user_path_at(dfd, filename, lookup_flags, &path);

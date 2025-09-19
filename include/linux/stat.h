@@ -14,6 +14,12 @@
 #define UTIME_NOW	((1l << 30) - 1l)
 #define UTIME_OMIT	((1l << 30) - 2l)
 
+/*
+ * The KSTAT_QUERY_FLAGS macro is used to streamline the flags used in the
+ * vfs_statx function, introduced in newer kernel versions.
+ */
+#define KSTAT_QUERY_FLAGS (AT_STATX_SYNC_TYPE | AT_SYMLINK_NOFOLLOW | AT_NO_AUTOMOUNT | AT_EMPTY_PATH)
+
 #include <linux/types.h>
 #include <linux/time.h>
 #include <linux/uidgid.h>
