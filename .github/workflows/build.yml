@@ -15,7 +15,7 @@ jobs:
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: sdm670-perf_defconfig
       ANYKERNEL_REPO: https://github.com/dain09/AnyKernel3
-      ANYKERNEL_BRANCH: suki
+      ANYKERNEL_BRANCH: rksu
 
     steps:
     - name: Checkout Kernel Source
