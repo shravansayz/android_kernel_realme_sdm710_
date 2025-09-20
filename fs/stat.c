@@ -116,6 +116,53 @@ int vfs_fstat(unsigned int fd, struct kstat *stat)
 EXPORT_SYMBOL(vfs_fstat);
 
 /**
+ * vfs_fstatat() - Get basic attributes by filename
+ * @dfd: A file descriptor representing the base dir for a relative filename
+ * @filename: The name of the file of interest
+ * @stat: The result structure to fill in.
+ * @flag: Flags to control the query
+ *
+ * This function is a wrapper around vfs_getattr(). The main difference is
+ * that it uses a filename and base directory to determine the file location.
+ * Additionally, the use of AT_SYMLINK_NOFOLLOW in flags will prevent a symlink
+ * at the given name from being referenced.
+ *
+ * 0 will be returned on success, and a -ve error code if unsuccessful.
+ */
+int vfs_fstatat(int dfd, const char __user *filename, struct kstat *stat,
+		int flag)
+{
+	struct path path;
+	int error = -EINVAL;
+	unsigned int lookup_flags = 0;
+
+	if ((flag & ~(AT_SYMLINK_NOFOLLOW | AT_NO_AUTOMOUNT |
+		      AT_EMPTY_PATH)) != 0)
+		goto out;
+
+	if (!(flag & AT_SYMLINK_NOFOLLOW))
+		lookup_flags |= LOOKUP_FOLLOW;
+	if (flag & AT_EMPTY_PATH)
+		lookup_flags |= LOOKUP_EMPTY;
+	if (flag & AT_NO_AUTOMOUNT)
+		lookup_flags |= LOOKUP_NO_AUTOMOUNT;
+retry:
+	error = user_path_at(dfd, filename, lookup_flags, &path);
+	if (error)
+		goto out;
+
+	error = vfs_getattr(&path, stat);
+	path_put(&path);
+	if (retry_estale(error, lookup_flags)) {
+		lookup_flags |= LOOKUP_REVAL;
+		goto retry;
+	}
+out:
+	return error;
+}
+EXPORT_SYMBOL(vfs_fstatat);
+
+/**
  * vfs_statx - Get basic and extra attributes by filename
  * @dfd: A file descriptor representing the base dir for a relative filename
  * @filename: The name of the file of interest
@@ -173,7 +220,7 @@ retry:
 out:
 	return error;
 }
-EXPORT_SYMBOL(vfs_fstatat);
+EXPORT_SYMBOL(vfs_statx);
 
 int vfs_stat(const char __user *name, struct kstat *stat)
 {
