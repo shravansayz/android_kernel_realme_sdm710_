@@ -31,12 +31,12 @@ jobs:
     - name: Update Repo
       id: sha
       run: |
-        git config --global user.name "ij_israfil"
-        git config --global user.email "israfilkhan494@gmail.com"
+        git config --global user.name "shravansayz"
+        git config --global user.email "shravankumarsayz@gmail.com"
         git submodule sync
         git submodule update --init --recursive
         cd $GITHUB_WORKSPACE/KernelSU-Next
-        git checkout next
+        git checkout wild
         git pull
         cd .. && git add .
         git commit -m "KernelSU: Auto-Sync KernelSU-Next To Latest Source"
