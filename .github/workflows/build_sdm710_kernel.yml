@@ -12,6 +12,7 @@ jobs:
       CCACHE_MAXSIZE: "2G"
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "sdm670-perf_defconfig"
+      KERNEL_CMDLINE: "ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out LLVM=1 LLVM_IAS=1"
     steps:
     - name: Checkout
       uses: actions/checkout@v4.2.2
@@ -21,63 +22,43 @@ jobs:
 
     - name: Set up ccache
       uses: hendrikmuhs/ccache-action@v1.2.16
-    
+
     - name: Install dependencies
       id: version
       run: |
-        sudo timedatectl set-timezone Asia/Kolkata
-        sudo apt-get update -y
-        sudo apt install gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi binutils make python3 libssl-dev build-essential bc bison flex zip unzip ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
-        
-        # Clone toolchains
+        sudo apt-get update -y 
+        sudo apt install gcc-aarch64-linux-gnu -y
+        sudo apt install gcc-arm-linux-gnueabi -y
+        sudo apt install binutils make python3 libssl-dev build-essential bc  bison flex zip unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
         git clone --depth=1 https://github.com/kdrag0n/proton-clang.git clang
-        git clone https://github.com/shravansayz/AnyKernel3.git -b master --depth=1
-        
-        # Clean AnyKernel3
-        rm -rf AnyKernel3/.git AnyKernel3/.github
-        
-        # Setup KernelSU
-        cd KernelSU-Next
+        git clone https://github.com/shravansayz/AnyKernel3 -b master --depth=1
+        rm -rf AnyKernel3/.git
+        rm -rf AnyKernel3/.github
+        git submodule sync
+        git submodule update --init --recursive
+        cd $GITHUB_WORKSPACE/KernelSU-Next
         git checkout next
         git pull
         export VERSION=$(git rev-list --count HEAD)
         echo "VER=$(($VERSION + 10200))" >> $GITHUB_OUTPUT
-        cd ..
-        
-        # Integrate KernelSU
-        ./KernelSU-Next/scripts/setup.sh kernelSU
-        
-        git submodule sync
-        git submodule update --init --recursive
+        cd -
     
     - name: GetTime
       id: get_time
       run: |
-        echo "TIME=$(TZ=GMT+06 date +%m%d%H%M)" >> $GITHUB_OUTPUT
+        echo "TIME=$(TZ=UTC-8 date +%m%d%H%M )" >> $GITHUB_OUTPUT
     
     - name: Build Kernel
       run: |
-        export PATH=$(pwd)/clang/bin:$PATH
-        export ARCH=arm64
-        export SUBARCH=arm64
-        export CLANG_PATH=$(pwd)/clang/bin
-        export CROSS_COMPILE=aarch64-linux-gnu-
-        export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
-        export LLVM=1
-        export LLVM_IAS=1
-        
-        # Build configuration
-        make O=out $KERNEL_DEFCONFIG
-        
-        # Build kernel
-        make O=out CC="ccache clang" -j$(nproc --all)
-        
-        # Copy output
-        cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
-        ls -la AnyKernel3/
-
+       export PATH=$(pwd)/clang/bin/:$PATH
+       export ARCH=arm64
+       export SUBARCH=arm64
+       make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
+       make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
+       cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+    
     - name: Upload Kernel
       uses: actions/upload-artifact@v4.6.0
       with:
-        name: RMX1901-KernelSU-Next-${{ steps.version.outputs.VER }}-${{ steps.get_time.outputs.TIME }}
-        path: AnyKernel3/Image.gz-dtb
+        name: RMX1901-BloodMoon-KernelSU-Next-${{ steps.version.outputs.VER }}-${{ steps.get_time.outputs.TIME }}
+        path: "AnyKernel3/*"
