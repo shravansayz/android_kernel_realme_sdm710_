@@ -119,4 +119,4 @@ jobs:
           *Not a financial advice.*
         files: ${{ env.ZIP_NAME }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
