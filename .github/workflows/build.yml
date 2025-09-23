@@ -8,7 +8,7 @@ jobs:
     name: Building Stonks Kernel for RMX1901
     runs-on: ubuntu-22.04
     env:
-      TZ: Africa/Cairo
+      TZ: Asia/Kolkata
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_NOHASHDIR: "true"
       CCACHE_MAXSIZE: "2G"
@@ -55,7 +55,7 @@ jobs:
         export PATH=$(pwd)/clang/bin:$PATH
         export ARCH=arm64
         export SUBARCH=arm64
-        export KBUILD_BUILD_USER="D_ai_n"
+        export KBUILD_BUILD_USER="ssk"
         export KBUILD_BUILD_HOST="Stonks-UP!UP!"
         export CROSS_COMPILE=aarch64-linux-gnu-
         export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
@@ -109,7 +109,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: "Stonks-Kernel-v1.0-${{ steps.get_time.outputs.TIME }}"
-        name: "Stonks Kernel | RMX1971 | ${{ steps.get_time.outputs.TIME }}"
+        name: "Stonks Kernel | RMX1901 | ${{ steps.get_time.outputs.TIME }}"
         body: |
           **Performance is going up! 📈**
 
