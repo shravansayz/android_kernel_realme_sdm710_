@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    name: Building Stonks Kernel for RMX1971
+    name: Building Stonks Kernel for RMX1901
     runs-on: ubuntu-22.04
     env:
       TZ: Africa/Cairo
@@ -14,7 +14,7 @@ jobs:
       CCACHE_MAXSIZE: "2G"
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: sdm670-perf_defconfig
-      ANYKERNEL_REPO: https://github.com/dain09/AnyKernel3
+      ANYKERNEL_REPO: https://github.com/shravansayz/AnyKernel3
       ANYKERNEL_BRANCH: rksu
 
     steps:
@@ -99,7 +99,7 @@ jobs:
     - name: Package Kernel into Flashable Zip
       run: |
         cd AnyKernel3
-        ZIP_NAME="Stonks-RKSU-Susfs-1.5.9-Kernel-RMX1971-${{ steps.get_time.outputs.TIME }}.zip"
+        ZIP_NAME="Stonks-RKSU-Susfs-1.5.9-Kernel-RMX1901-${{ steps.get_time.outputs.TIME }}.zip"
         zip -r9 ../$ZIP_NAME ./*
         cd ..
         # Store ZIP_NAME for the next step
@@ -113,7 +113,7 @@ jobs:
         body: |
           **Performance is going up! 📈**
 
-          Stonks Kernel release for RMX1971.
+          Stonks Kernel release for RMX1901.
           Flash and get ready for the gains!
 
           *Not a financial advice.*
